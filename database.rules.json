@@ -1,0 +1,15 @@
+{
+  "rules": {
+    "chat_rooms": {
+      "$roomId": {
+        ".read": "auth != null && $roomId.contains(auth.uid)",
+        ".write": "auth != null && $roomId.contains(auth.uid)",
+        "messages": {
+          "$messageId": {
+            ".validate": "newData.hasChildren(['senderId', 'text', 'timestamp']) && newData.child('senderId').val() === auth.uid"
+          }
+        }
+      }
+    }
+  }
+}

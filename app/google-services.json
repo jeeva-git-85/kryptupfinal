@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "838140946601",
+    "project_id": "kryptup-a6c9b",
+    "storage_bucket": "kryptup-a6c9b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:838140946601:android:8b541849df5f3dfbab21b8",
+        "android_client_info": {
+          "package_name": "com.kryptup.kryptup"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "838140946601-ut461q77u9vbg5ocsqg4svcljsn1pgb0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDi2b7m6hD7R6UE5uUW2G3IQ6yFhN3PMgk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "838140946601-ut461q77u9vbg5ocsqg4svcljsn1pgb0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

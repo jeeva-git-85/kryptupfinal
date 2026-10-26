@@ -1,0 +1,44 @@
+===================================================================
+KRYPTUP FINTECH - FACIAL RECOGNITION & BIOMETRIC REGISTRATION EXPLANATION
+===================================================================
+
+QUESTION: Do users need to register their face inside the KryptUp app?
+
+ANSWER: NO. Users do NOT need to register their face inside the KryptUp app.
+
+-------------------------------------------------------------------
+HOW ANDROID HARDWARE-BACKED BIOMETRICS WORK:
+-------------------------------------------------------------------
+
+1. REGISTERED ONCE IN ANDROID SYSTEM SETTINGS
+   - Users register their face or fingerprint once in Android System Settings
+     (Settings -> Security -> Face Unlock / Biometrics).
+   - Android securely stores mathematical face feature templates inside the
+     device's Hardware Secure Enclave / TEE (Trusted Execution Environment).
+   - Raw face data never leaves the hardware security chip and is NEVER accessible
+     to any application for privacy and PCI-DSS compliance.
+
+2. HOW KRYPTUP UTILIZES HARDWARE FACE UNLOCK
+   - When a transaction is initiated, KryptUp's `BiometricPaymentSecurityManager`
+     invokes Jetpack `BiometricPrompt` configured with `BIOMETRIC_STRONG` and
+     backed by an `AndroidKeyStore` AES-256 `CryptoObject`.
+   - The Android OS displays the system biometric prompt and uses the front
+     camera / depth sensors to validate the user's face against the secure
+     hardware enclave.
+   - Upon successful hardware match, the Android Keystore unlocks the `CryptoObject`
+     cipher to encrypt the transaction payload.
+
+3. IN-APP USER EXPERIENCE
+   - Inside KryptUp, users only create their 4-Digit Transaction PIN during setup.
+   - If Face Unlock / Biometrics is configured on the user's Android phone,
+     KryptUp automatically offers hardware Face ID for instant, seamless
+     transaction authorization.
+
+-------------------------------------------------------------------
+SECURITY ADVANTAGES:
+-------------------------------------------------------------------
+- 100% Privacy Compliant: No biometric data stored in app databases.
+- Automatic Fraud Prevention: Configured with `.setInvalidatedByBiometricEnrollment(true)`.
+  If an unauthorized person adds a new face in the device system settings,
+  KryptUp automatically permanently invalidates the payment key and requires
+  the user's PIN.

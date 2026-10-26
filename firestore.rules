@@ -1,0 +1,43 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // User profile documents
+    match /users/{userId} {
+      // Any authenticated user can read profiles for recipient lookup & UPI resolution
+      allow read: if request.auth != null;
+
+      // Users can only create their own document with zero balance, zero points, and unlinked bank
+      allow create: if request.auth != null
+        && request.auth.uid == userId
+        && request.resource.data.fiatBalanceInr == 0
+        && request.resource.data.get('points', 0) == 0
+        && request.resource.data.get('isBankLinked', false) == false;
+
+      // Users cannot tamper with balances, points, bank linking status, daily streak, or identity
+      allow update: if request.auth != null
+        && request.auth.uid == userId
+        && !request.resource.data.diff(resource.data).affectedKeys()
+             .hasAny(['fiatBalanceInr', 'isBankLinked', 'points', 'lastDailyClaim', 'upiId', 'uid', 'email']);
+
+      // Prevent document deletion
+      allow delete: if false;
+
+      // User's private transaction ledger — append-only (immutable once recorded)
+      match /transactions/{txId} {
+        allow read: if request.auth != null && request.auth.uid == userId;
+        allow create: if request.auth != null && request.auth.uid == userId;
+        allow update, delete: if false;
+      }
+    }
+
+    // Internal server-only collections (sessions, idempotency)
+    match /bank_linking_sessions/{sessionId} {
+      allow read, write: if false;
+    }
+
+    match /idempotency_keys/{keyId} {
+      allow read, write: if false;
+    }
+  }
+}
