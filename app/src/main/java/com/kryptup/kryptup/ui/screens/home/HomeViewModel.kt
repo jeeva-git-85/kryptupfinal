@@ -171,7 +171,6 @@ class HomeViewModel @Inject constructor(
     fun markNotificationsRead() {
         setLastReadTimestamp(System.currentTimeMillis())
         _unreadCount.value = 0
-        _notifications.value = emptyList()
     }
 
     override fun onCleared() {
