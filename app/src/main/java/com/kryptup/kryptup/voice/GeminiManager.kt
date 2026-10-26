@@ -89,7 +89,7 @@ class GeminiManager {
             )
         )
 
-        val candidateModels = listOf("gemini-3.8-flash", "gemini-3.7-flash", "gemini-2.5-flash", "gemini-1.5-flash")
+        val candidateModels = listOf("gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro", "gemini-pro")
 
         for (modelName in candidateModels) {
             try {
