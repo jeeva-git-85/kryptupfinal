@@ -125,11 +125,34 @@ class GeminiManager {
                     return@withContext AgentAction.TextResponse(textResponse)
                 }
             } catch (e: Exception) {
-                // Try next candidate model
+                android.util.Log.w("GeminiManager", "Gemini AI model $modelName failed: ${e.message}")
             }
         }
 
-        AgentAction.TextResponse("KryptUp AI: Unable to process agent request.")
+        // Fall back to intelligent local Financial NLP engine if remote Gemini API key/endpoint fails
+        val localNlp = FinancialNlpEngine()
+        when (val intent = localNlp.parseCommand(userPrompt)) {
+            is VoiceIntent.NavigateScreen -> {
+                AgentAction.NavigateScreen(intent.screen, "Navigating to ${intent.screen} screen...")
+            }
+            is VoiceIntent.SendCrypto -> {
+                AgentAction.SendCrypto(
+                    amount = intent.amount.toString(),
+                    symbol = intent.symbol,
+                    recipient = intent.recipient,
+                    message = "Opening transfer for ${intent.amount} ${intent.symbol} to ${intent.recipient}..."
+                )
+            }
+            is VoiceIntent.CheckBalance -> {
+                AgentAction.TextResponse("KryptUp AI: Checking your portfolio balance...")
+            }
+            is VoiceIntent.CheckPrice -> {
+                AgentAction.TextResponse("KryptUp AI: Fetching live market price for ${intent.symbol}...")
+            }
+            is VoiceIntent.Unknown -> {
+                AgentAction.TextResponse("KryptUp AI Assistant: I can help you send crypto, link bank accounts, trade assets, or check market prices.")
+            }
+        }
     }
 
     // Retain legacy method for backward compatibility
